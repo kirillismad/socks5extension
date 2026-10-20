@@ -22,7 +22,7 @@ const files = new Map([
   ['/popup/popup.css', 'text/css'],
   ['/popup/popup.js', 'text/javascript'],
   ['/src/core.js', 'text/javascript'],
-  ['/docs/privacy-policy.html', 'text/html']
+  ['/pages/privacy-policy.html', 'text/html']
 ]);
 const server = createServer(async (request, response) => {
   const pathname = new URL(request.url, 'http://localhost').pathname;
@@ -106,7 +106,7 @@ try {
   assert.equal(await popup.locator('#status-description').textContent(), 'Chrome connects directly without a proxy');
 
   const canvasPage = await context.newPage();
-  await canvasPage.goto(`${origin}/docs/privacy-policy.html`);
+  await canvasPage.goto(`${origin}/pages/privacy-policy.html`);
   const sourcePath = path.join(output, 'icons/icon-256.png');
   let iconSource;
   try {
@@ -239,7 +239,7 @@ try {
   await writeFile(path.join(output, 'promo/small-440x280.png'), Buffer.from(promo, 'base64'));
 
   await canvasPage.setViewportSize({ width: 375, height: 812 });
-  await canvasPage.goto(`${origin}/docs/privacy-policy.html`);
+  await canvasPage.goto(`${origin}/pages/privacy-policy.html`);
   assert.equal(await canvasPage.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
   assert.ok(await canvasPage.locator('h1').isVisible());
   assert.deepEqual(pageErrors, []);

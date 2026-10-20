@@ -34,7 +34,7 @@ Review the dashboard's current definitions and attest only to statements that ac
 
 ## Privacy Policy URL
 
-Host privacy-policy.html at a stable, publicly accessible HTTPS URL and paste that URL into the dashboard. A local filesystem path is not a public policy URL. Review the policy before publishing it.
+The policy source is [../pages/privacy-policy.html](../pages/privacy-policy.html). Enable the GitHub Pages workflow as described in [README.md](README.md#privacy-policy-hosting). After deployment, verify <https://kirillismad.github.io/socks5extension/privacy-policy.html> is publicly accessible and paste that URL into the dashboard. A local filesystem path is not a public policy URL. Review the policy before publishing it; the expected URL is not a claim that deployment has already occurred.
 
 ## Publisher Details
 

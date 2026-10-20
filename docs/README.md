@@ -7,7 +7,21 @@ Prepared for SOCKS5 Route 1.0.0. Primary language: English, matching the extensi
 - [store-listing.md](store-listing.md): name, short and detailed descriptions, suggested category, and language.
 - [privacy-practices.md](privacy-practices.md): single purpose, permission justifications, remote-code declaration, and data-use guidance.
 - [reviewer-instructions.md](reviewer-instructions.md): setup requirements, test steps, and known limitations.
-- [privacy-policy.html](privacy-policy.html): standalone policy page with no external scripts, fonts, or analytics. Host it at a public HTTPS URL before submission.
+- [../pages/privacy-policy.html](../pages/privacy-policy.html): policy page published by GitHub Pages, with no external scripts, fonts, or analytics. Edit this file to update the public policy.
+
+## Privacy Policy Hosting
+
+The workflow in [.github/workflows/pages.yml](../.github/workflows/pages.yml) deploys only the `pages/` directory to GitHub Pages. It runs on pushes to `main` that change `pages/` or the workflow, and can also be run manually on `main`.
+
+1. Open the repository's Settings > Pages.
+2. Under Build and deployment, set Source to GitHub Actions. Ensure the repository and account plan permit GitHub Pages, and that Actions are enabled.
+3. Commit and push the `pages/` directory and the workflow to `main`.
+4. Wait for the Deploy Privacy Policy workflow to finish successfully. If Pages was enabled after the push, run the workflow manually from the Actions tab.
+5. Open the public policy URL and verify it is accessible without signing in before submitting it to Chrome Web Store.
+
+Expected public URL after deployment: <https://kirillismad.github.io/socks5extension/privacy-policy.html>. The site root redirects to this page using a relative URL that also works under the repository's project path.
+
+This repository change prepares deployment; it does not enable Pages remotely, push commits, or verify a live deployment. Edit `pages/privacy-policy.html` for future policy updates. Files outside `pages/`, including extension source code, are not part of the published site artifact.
 
 ## Graphics
 
