@@ -3,6 +3,10 @@
   "name": "SOCKS5 Route",
   "version": "1.0.0",
   "description": "Route supported Chrome web requests through one SOCKS5 proxy with hostname exceptions.",
+  "icons": {
+    "128": "docs/icons/icon-128.png",
+    "256": "docs/icons/icon-256.png"
+  },
   "permissions": [
     "proxy",
     "storage"

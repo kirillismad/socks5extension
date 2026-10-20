@@ -107,27 +107,87 @@ try {
 
   const canvasPage = await context.newPage();
   await canvasPage.goto(`${origin}/docs/privacy-policy.html`);
-  for (const size of [16, 32, 48, 128]) {
-    const data = await canvasPage.evaluate((size) => {
+  const sourcePath = path.join(output, 'icons/icon-256.png');
+  let iconSource;
+  try {
+    iconSource = await readFile(sourcePath);
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error;
+    const data = await canvasPage.evaluate(() => {
       const canvas = document.createElement('canvas');
-      canvas.width = size;
-      canvas.height = size;
+      canvas.width = 256;
+      canvas.height = 256;
       const drawing = canvas.getContext('2d');
-      drawing.scale(size / 128, size / 128);
+      drawing.scale(2, 2);
       drawing.fillStyle = '#195b4c';
       drawing.beginPath();
-      drawing.roundRect(16, 16, 96, 96, 8);
+      drawing.roundRect(0.5, 0.5, 127, 127, 8);
       drawing.fill();
       drawing.strokeStyle = '#ffffffcc';
       drawing.lineWidth = 1;
       drawing.stroke();
       drawing.fillStyle = '#ffffff';
-      drawing.font = '700 66px "Avenir Next", sans-serif';
+      drawing.font = '700 88px "Avenir Next", sans-serif';
       drawing.textAlign = 'center';
       drawing.textBaseline = 'middle';
       drawing.fillText('S', 64, 68);
       return canvas.toDataURL('image/png').split(',')[1];
-    }, size);
+    });
+    iconSource = Buffer.from(data, 'base64');
+    await writeFile(sourcePath, iconSource);
+  }
+  assert.equal(iconSource.subarray(1, 4).toString(), 'PNG');
+  assert.equal(iconSource.readUInt32BE(16), 256);
+  assert.equal(iconSource.readUInt32BE(20), 256);
+  const croppedSource = await canvasPage.evaluate(async (source) => {
+    const image = new Image();
+    image.src = `data:image/png;base64,${source}`;
+    await image.decode();
+    const canvas = document.createElement('canvas');
+    canvas.width = 256;
+    canvas.height = 256;
+    const drawing = canvas.getContext('2d');
+    drawing.drawImage(image, 0, 0);
+    const pixels = drawing.getImageData(0, 0, 256, 256).data;
+    let left = 256;
+    let top = 256;
+    let right = -1;
+    let bottom = -1;
+    for (let row = 0; row < 256; row += 1) {
+      for (let column = 0; column < 256; column += 1) {
+        if (pixels[(row * 256 + column) * 4 + 3] === 0) continue;
+        left = Math.min(left, column);
+        top = Math.min(top, row);
+        right = Math.max(right, column);
+        bottom = Math.max(bottom, row);
+      }
+    }
+    if (right < left) throw new Error('The icon source is completely transparent.');
+    if (left === 0 && top === 0 && right === 255 && bottom === 255) return null;
+    drawing.clearRect(0, 0, 256, 256);
+    drawing.imageSmoothingEnabled = true;
+    drawing.imageSmoothingQuality = 'high';
+    drawing.drawImage(image, left, top, right - left + 1, bottom - top + 1, 0, 0, 256, 256);
+    return canvas.toDataURL('image/png').split(',')[1];
+  }, iconSource.toString('base64'));
+  if (croppedSource) {
+    iconSource = Buffer.from(croppedSource, 'base64');
+    await writeFile(sourcePath, iconSource);
+  }
+  for (const size of [128]) {
+    const data = await canvasPage.evaluate(async ({ source, size }) => {
+      const image = new Image();
+      image.src = `data:image/png;base64,${source}`;
+      await image.decode();
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const drawing = canvas.getContext('2d');
+      drawing.imageSmoothingEnabled = true;
+      drawing.imageSmoothingQuality = 'high';
+      drawing.drawImage(image, 0, 0, size, size);
+      return canvas.toDataURL('image/png').split(',')[1];
+    }, { source: iconSource.toString('base64'), size });
     await writeFile(path.join(output, `icons/icon-${size}.png`), Buffer.from(data, 'base64'));
   }
 
@@ -184,7 +244,7 @@ try {
   assert.ok(await canvasPage.locator('h1').isVisible());
   assert.deepEqual(pageErrors, []);
   for (const [relativePath, width, height] of [
-    ...[16, 32, 48, 128].map((size) => [`icons/icon-${size}.png`, size, size]),
+    ...[128, 256].map((size) => [`icons/icon-${size}.png`, size, size]),
     ['promo/small-440x280.png', 440, 280],
     ['screenshots/01-popup-and-routing.png', 1280, 800],
     ['screenshots/02-settings.png', 1280, 800]

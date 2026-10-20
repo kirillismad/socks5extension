@@ -1,0 +1,95 @@
+version: "3"
+
+vars:
+  ASSET_TOOLS_DIR: "{{.ROOT_DIR}}/.tools/store"
+  PLAYWRIGHT_VERSION: "1.64.1"
+
+tasks:
+  default:
+    desc: List available commands
+    cmds:
+      - task --list
+
+  test:
+    desc: Run the extension tests
+    cmds:
+      - npm test
+
+  check:
+    desc: Check JavaScript syntax, manifest entry points, and icon dimensions
+    cmds:
+      - |
+        for source in src/*.js popup/*.js options/*.js test/*.js docs/*.mjs; do
+          node --check "$source" || exit 1
+        done
+      - |
+        node --input-type=module <<'NODE'
+        import assert from 'node:assert/strict';
+        import { access, readFile } from 'node:fs/promises';
+        const manifest = JSON.parse(await readFile('manifest.json', 'utf8'));
+        assert.equal(manifest.manifest_version, 3);
+        assert.match(manifest.version, /^\d+(?:\.\d+){0,3}$/);
+        for (const filename of [manifest.background.service_worker, manifest.action.default_popup, manifest.options_page]) {
+          await access(filename);
+        }
+        for (const [size, filename] of Object.entries(manifest.icons)) {
+          const image = await readFile(filename);
+          assert.equal(image.subarray(1, 4).toString(), 'PNG');
+          assert.equal(image.readUInt32BE(16), Number(size));
+          assert.equal(image.readUInt32BE(20), Number(size));
+        }
+        console.log('Manifest, entry points, and icons verified.');
+        NODE
+
+  assets:install:
+    desc: Install isolated tooling for store graphics (no runtime dependencies)
+    status:
+      - test -f "{{.ASSET_TOOLS_DIR}}/node_modules/playwright/package.json"
+    cmds:
+      - npm install --prefix "{{.ASSET_TOOLS_DIR}}" --no-audit --no-fund --package-lock=false playwright@{{.PLAYWRIGHT_VERSION}}
+
+  assets:
+    desc: Regenerate icons, store screenshots, and promotional graphics (requires Chrome)
+    deps: [assets:install]
+    env:
+      PLAYWRIGHT_MODULE: "{{.ASSET_TOOLS_DIR}}/node_modules/playwright"
+    cmds:
+      - node docs/generate-assets.mjs
+
+  build:
+    desc: Check, test, and build a verified Chrome Web Store ZIP
+    cmds:
+      - task: check
+      - task: test
+      - |
+        set -eu
+        version=$(jq -er '.version' manifest.json)
+        archive="socks5-route-${version}.zip"
+        mkdir -p .tools
+        directory=$(mktemp -d "$PWD/.tools/build.XXXXXX")
+        trap 'rm -rf "$directory"' EXIT
+
+        set -- manifest.json src/background.js src/core.js \
+          popup/index.html popup/popup.css popup/popup.js \
+          options/index.html options/options.css options/options.js
+        jq -r '[.icons[]] | unique[]' manifest.json > "$directory/icons"
+        while IFS= read -r icon; do
+          set -- "$@" "$icon"
+        done < "$directory/icons"
+
+        zip -X "$directory/extension.zip" "$@"
+        unzip -t "$directory/extension.zip"
+        printf '%s\n' "$@" | LC_ALL=C sort > "$directory/expected"
+        unzip -Z1 "$directory/extension.zip" | LC_ALL=C sort > "$directory/actual"
+        cmp "$directory/expected" "$directory/actual"
+        for filename in "$@"; do
+          unzip -p "$directory/extension.zip" "$filename" > "$directory/file"
+          cmp "$filename" "$directory/file"
+        done
+        mv -f "$directory/extension.zip" "$archive"
+        printf 'Built %s: %s files.\n' "$archive" "$#"
+
+  clean:
+    desc: Remove generated release ZIPs (keep source icons and store materials)
+    cmds:
+      - rm -f socks5-route-*.zip

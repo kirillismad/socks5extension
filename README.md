@@ -40,3 +40,16 @@ Import validates the complete file before asking for confirmation and applying i
 ## Test
 
 Run `npm test` with Node.js 18 or newer.
+
+## Development Commands
+
+With [Task](https://taskfile.dev/) installed, run `task` to list commands:
+
+- `task test`: run all tests.
+- `task check`: check JavaScript syntax, manifest entry points, and PNG icon dimensions.
+- `task assets:install`: install pinned Playwright tooling in the ignored `.tools/store` directory.
+- `task assets`: regenerate icons and store graphics using desktop Google Chrome. Installs the tooling if missing. The 256 x 256 icon is the source; fully transparent outer padding is removed before generating smaller icons.
+- `task build`: run checks and tests, then create `socks5-route-<version>.zip` using the manifest version. The archive contains only runtime files and referenced icons. An existing archive is replaced only after the new archive passes integrity and content checks.
+- `task clean`: remove generated release ZIPs without deleting source icons or store materials.
+
+Node.js and npm are required for checks and tests. ZIP packaging itself uses shell with `jq`, `zip`, and `unzip`, without Node.js. Asset generation requires desktop Google Chrome and a Node.js version supported by Playwright. Build does not regenerate store graphics or download asset tooling. To use another tooling location, run `task assets ASSET_TOOLS_DIR=/absolute/path/to/tools`.
