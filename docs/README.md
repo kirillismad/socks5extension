@@ -1,0 +1,74 @@
+# Chrome Web Store Submission Materials
+
+Prepared for SOCKS5 Route 1.0.0. Primary language: English, matching the extension interface. Nothing has been uploaded or published.
+
+## Dashboard Text
+
+- [store-listing.md](store-listing.md): name, short and detailed descriptions, suggested category, and language.
+- [privacy-practices.md](privacy-practices.md): single purpose, permission justifications, remote-code declaration, and data-use guidance.
+- [reviewer-instructions.md](reviewer-instructions.md): setup requirements, test steps, and known limitations.
+- [privacy-policy.html](privacy-policy.html): standalone policy page with no external scripts, fonts, or analytics. Host it at a public HTTPS URL before submission.
+
+## Graphics
+
+| Artifact                                                                     | Dimensions | Use                                                                      |
+| ---------------------------------------------------------------------------- | ---------- | ------------------------------------------------------------------------ |
+| [icons/icon-128.png](icons/icon-128.png)                                     | 128 x 128  | Store icon; transparent padding around a 96 x 96 mark                    |
+| [icons/icon-48.png](icons/icon-48.png)                                       | 48 x 48    | Extension icon                                                           |
+| [icons/icon-32.png](icons/icon-32.png)                                       | 32 x 32    | Extension icon                                                           |
+| [icons/icon-16.png](icons/icon-16.png)                                       | 16 x 16    | Extension icon                                                           |
+| [promo/small-440x280.png](promo/small-440x280.png)                           | 440 x 280  | Required small promotional tile                                          |
+| [screenshots/01-popup-and-routing.png](screenshots/01-popup-and-routing.png) | 1280 x 800 | Popup with enabled routing and a read-only exception list, over Settings |
+| [screenshots/02-settings.png](screenshots/02-settings.png)                   | 1280 x 800 | Proxy configuration, direct-connection patterns, and JSON actions        |
+
+The graphics use the extension's existing S mark and colors, without third-party stock art. Screenshots render the current application HTML/CSS/JavaScript with synthetic chrome.runtime responses, not a live installed extension. Example data is `socks5://localhost:10808` with `example.com`, `*.example.com`, and `*.internal.test` exceptions. No real proxy server, personal data, or credentials were used. Network routing and connectivity are not verified by these images. The popup screenshot combines the actual popup page and actual Settings page; it does not depict a new in-product layout.
+
+To use the prepared icons in a future release, merge the following top-level field into the runtime manifest and include these four files in the uploaded ZIP. The manifest has not been changed by this materials-only task.
+
+```json
+{
+  "icons": {
+    "16": "docs/icons/icon-16.png",
+    "32": "docs/icons/icon-32.png",
+    "48": "docs/icons/icon-48.png",
+    "128": "docs/icons/icon-128.png"
+  }
+}
+```
+
+## Regenerate Graphics
+
+[generate-assets.mjs](generate-assets.mjs) regenerates all PNGs from the repository root. It uses a temporary local HTTP server on a dynamically assigned loopback port and closes the server and isolated browser when finished. It blocks external page requests, injects synthetic Chrome runtime responses, and does not load the extension or modify your Chrome proxy settings. PNG dimensions, sample UI state, popup fit, JavaScript errors, and the policy page's mobile overflow are checked during generation.
+
+With Node.js 18 or newer and desktop Google Chrome installed:
+
+```sh
+npm install --prefix /tmp/socks5-route-store-tools --no-audit --no-fund --package-lock=false playwright
+PLAYWRIGHT_MODULE=/tmp/socks5-route-store-tools/node_modules/playwright node docs/generate-assets.mjs
+```
+
+The tooling is installed outside this repository; it is not an extension dependency. Rendering may vary slightly with installed Chrome and system fonts. The checked-in PNGs are ready to upload without rerunning the generator.
+
+## Release Checklist
+
+- Review all text against the actual submitted version and any services you operate.
+- Register the publisher account, verify the contact email, complete required account verification, and enable Google two-step verification.
+- Publish the privacy policy at a stable public HTTPS URL. A local file path is not acceptable in the dashboard.
+- Enter a real publisher name, support contact, and support URL if available. The policy refers to the contact email shown in the store listing.
+- Add the prepared icons to the extension package and declare them in manifest.json. This task prepares artifacts in docs/; it does not change the runtime manifest.
+- Upload the store icon, screenshots, and small promotional tile, and complete the dashboard's current required fields.
+- Manually test the extension in Chrome with a real SOCKS5 server, including failure and restart scenarios. Automated tests and sample screenshots do not establish proxy connectivity.
+- Confirm that on/off means SOCKS5/direct for Chrome, not enabled/system proxy. Warn that disabling or removing the extension releases control back to Chrome.
+- Do not claim a provided proxy service, credential support, a server health check, guaranteed anonymity, full-device coverage, proxy DNS, or a kill switch.
+- Create a ZIP with the extension manifest at its root and only the files needed by the extension. Do not include docs/, test/, or local development files unless an asset is actually referenced by the runtime manifest.
+- Submit for review. For later uploads, increase the manifest version and update the same store item.
+
+## Official References
+
+- [Prepare an extension](https://developer.chrome.com/docs/webstore/prepare)
+- [Publish an extension](https://developer.chrome.com/docs/webstore/publish)
+- [Store listing fields](https://developer.chrome.com/docs/webstore/cws-dashboard-listing)
+- [Privacy practices](https://developer.chrome.com/docs/webstore/cws-dashboard-privacy)
+- [Image requirements](https://developer.chrome.com/docs/webstore/images)
+
+The publisher must verify current dashboard and policy requirements before submission. Store approval is not guaranteed.

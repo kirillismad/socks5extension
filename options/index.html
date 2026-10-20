@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SOCKS5 Route Settings</title>
+    <link rel="stylesheet" href="options.css">
+  </head>
+  <body>
+    <header class="masthead">
+      <div class="masthead-inner">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <div><p class="eyebrow">CHROME ROUTING</p><h1>SOCKS5 Route</h1></div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="section">
+        <div class="section-heading"><span class="section-index">01</span><div><h2>Proxy server</h2><p>One SOCKS5 endpoint for supported Chrome web requests.</p></div></div>
+        <form id="settings-form" novalidate>
+          <label for="proxy-uri">SOCKS5 URI</label>
+          <input id="proxy-uri" name="proxyUri" type="text" placeholder="socks5://localhost:10808" autocomplete="off" spellcheck="false">
+          <p class="field-help">Credentials are not supported. Settings stay in this browser.</p>
+          <div id="uri-error" class="field-error" role="alert" hidden></div>
+          <div class="action-row"><button class="primary-button" type="submit">Save settings</button><span id="save-status" role="status"></span></div>
+        </form>
+      </section>
+
+      <section class="section">
+        <div class="section-heading"><span class="section-index">02</span><div><h2>Direct connections</h2><p>Matching hostnames bypass the SOCKS5 proxy.</p></div></div>
+        <div class="mask-entry">
+          <div class="input-wrap"><label class="sr-only" for="new-mask">Hostname pattern</label><input id="new-mask" type="text" placeholder="*.example.com" autocomplete="off" spellcheck="false"><span id="mask-error" class="inline-error" role="alert"></span></div>
+          <button id="add-mask" class="secondary-button" type="button">Add pattern</button>
+        </div>
+        <ul id="mask-list" class="mask-list" aria-label="Direct connection patterns"></ul>
+        <p class="field-help">* matches any number of characters; ? matches one character. Patterns match hostnames only and ignore letter case.</p>
+      </section>
+
+      <section class="section data-section">
+        <div class="section-heading"><span class="section-index">03</span><div><h2>Settings file</h2><p>Export or replace settings with a versioned JSON file.</p></div></div>
+        <div class="data-actions"><button id="export" class="secondary-button" type="button">Export JSON</button><button id="import" class="secondary-button" type="button">Import JSON</button><input id="import-file" type="file" accept="application/json,.json" hidden></div>
+        <div id="data-message" class="field-error" role="alert" hidden></div>
+      </section>
+
+      <aside class="notice" aria-label="Routing limitations">
+        <span class="notice-mark" aria-hidden="true">!</span>
+        <div><h2>Routing limits</h2><p>This changes Chrome's proxy settings for supported URL requests, including HTTP, HTTPS and FTP. It does not cover all browser traffic, device traffic, or separate UDP/WebRTC flows. DNS resolution through SOCKS5 depends on Chrome behavior and is not guaranteed.</p><p>Chrome may use a direct connection after some proxy errors. The extension can show reported errors, but cannot guarantee fail-closed behavior. When disabled, it explicitly sets Chrome to direct connections instead of restoring a previous or system proxy. This does not bypass a system VPN or TUN tunnel.</p></div>
+      </aside>
+    </main>
+    <script type="module" src="options.js"></script>
+  </body>
+</html>

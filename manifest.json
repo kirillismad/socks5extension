@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "SOCKS5 Route",
+  "version": "1.0.0",
+  "description": "Route supported Chrome web requests through one SOCKS5 proxy with hostname exceptions.",
+  "permissions": [
+    "proxy",
+    "storage"
+  ],
+  "background": {
+    "service_worker": "src/background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "SOCKS5 Route",
+    "default_popup": "popup/index.html"
+  },
+  "options_page": "options/index.html"
+}

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SOCKS5 Route</title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <main class="popup">
+      <header class="topbar">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <div>
+          <p class="eyebrow">CHROME ROUTING</p>
+          <h1>SOCKS5 Route</h1>
+        </div>
+        <button class="icon-button" id="settings" type="button" aria-label="Open settings" title="Open settings">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 15 .1.1a1.8 1.8 0 0 1-2.5 2.5l-.1-.1a1.8 1.8 0 0 0-3 .9v.2a1.8 1.8 0 0 1-3.6 0v-.2a1.8 1.8 0 0 0-3-.9l-.1.1a1.8 1.8 0 0 1-2.5-2.5l.1-.1a1.8 1.8 0 0 0-.9-3h-.2a1.8 1.8 0 0 1 0-3.6h.2a1.8 1.8 0 0 0 .9-3l-.1-.1a1.8 1.8 0 0 1 2.5-2.5l.1.1a1.8 1.8 0 0 0 3-.9v-.2a1.8 1.8 0 0 1 3.6 0v.2a1.8 1.8 0 0 0 3 .9l.1-.1a1.8 1.8 0 0 1 2.5 2.5l-.1.1a1.8 1.8 0 0 0 .9 3h.2a1.8 1.8 0 0 1 0 3.6h-.2a1.8 1.8 0 0 0-.9 3Z"/></svg>
+        </button>
+      </header>
+
+      <section class="status-row" aria-live="polite">
+        <div class="status-indicator" id="indicator"></div>
+        <div class="status-copy">
+          <p class="status-title" id="status-title">Loading status</p>
+          <p class="status-description" id="status-description">Checking Chrome proxy settings</p>
+        </div>
+        <label class="switch">
+          <input id="enabled" type="checkbox" aria-label="Enable SOCKS5 proxy" disabled>
+          <span class="switch-track"></span>
+        </label>
+      </section>
+
+      <section class="routing-row">
+        <div class="status-copy">
+          <p class="status-title" id="routing-title">Routing</p>
+          <p class="status-description" id="routing-description">Checking routing mode</p>
+        </div>
+        <label class="switch">
+          <input id="routing-enabled" type="checkbox" aria-labelledby="routing-title" aria-describedby="routing-description" disabled>
+          <span class="switch-track"></span>
+        </label>
+      </section>
+
+      <section class="routing-patterns" id="routing-patterns" aria-labelledby="patterns-title" hidden>
+        <h2 class="status-title" id="patterns-title">Routing patterns</h2>
+        <ul class="pattern-list" id="pattern-list" aria-labelledby="patterns-title" tabindex="0" hidden></ul>
+        <p class="status-description" id="patterns-empty" hidden>No patterns</p>
+      </section>
+
+      <p class="message" id="message" role="status" hidden></p>
+      <button class="settings-link" id="configure" type="button">Configure proxy and exceptions <span aria-hidden="true">&#8599;</span></button>
+      <footer>Routes supported Chrome web requests only. Proxy failures may fall back to a direct connection.</footer>
+    </main>
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

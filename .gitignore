@@ -1,0 +1,19 @@
+# Dependencies and generated output
+node_modules/
+coverage/
+.codegraph/
+
+# Local environment and private keys
+.env
+.env.*
+!.env.example
+*.pem
+
+# Extension packages and logs
+*.zip
+*.crx
+*.log
+
+# macOS metadata
+.DS_Store
+._*

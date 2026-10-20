@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Privacy policy for the SOCKS5 Route Chrome extension.">
+    <title>SOCKS5 Route - Privacy Policy</title>
+    <style>
+      :root { color-scheme: light; font-family: 'Avenir Next', 'Segoe UI', sans-serif; color: #182a27; background: #f5f7f3; }
+      * { box-sizing: border-box; }
+      body { max-width: 780px; margin: 0 auto; padding: 40px 24px 64px; line-height: 1.7; overflow-wrap: anywhere; }
+      header { padding-bottom: 24px; border-bottom: 1px solid #c7d0c9; }
+      h1 { margin: 0 0 8px; font-size: 30px; line-height: 1.25; }
+      h2 { margin: 28px 0 8px; font-size: 19px; }
+      p, ul { margin: 8px 0; }
+      .date { color: #52685f; font-size: 14px; }
+      code { font-size: 0.9em; }
+      a { color: #195b4c; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>SOCKS5 Route Privacy Policy</h1>
+      <p class="date">Last updated: October 20, 2026</p>
+    </header>
+    <main>
+      <h2>Scope</h2>
+      <p>This policy covers the SOCKS5 Route Chrome extension. The extension configures a SOCKS5 server chosen by you. It does not provide a proxy server, VPN service, user account, or subscription.</p>
+
+      <h2>Information Stored on Your Device</h2>
+      <p>The extension uses <code>chrome.storage.local</code> to save your proxy server address and port, hostname exception patterns, proxy and routing preferences, and extension error state. This information is used to apply your configuration and display status. It is not sent to the extension developer or synchronized by the extension to a cloud account.</p>
+      <p>The extension does not record visited URLs or browsing history and does not include analytics, advertising, tracking cookies, or telemetry. Chrome evaluates hostname routing rules to choose a connection route; the extension does not keep a log of those requests.</p>
+
+      <h2>Your Chosen Proxy Server</h2>
+      <p>When you enable the proxy, supported requests assigned to SOCKS5 are sent through the server you configured. That server is not operated or supplied by this extension. Its operator may observe destination information, connection timing, and other network metadata. Content sent without end-to-end encryption may also be visible to the operator. SOCKS5 itself does not encrypt traffic; HTTPS provides its own transport encryption.</p>
+      <p>Hostname exceptions connect directly when Routing is enabled. When Routing is disabled while the proxy is enabled, the saved exceptions are not applied. Chrome may use a direct connection after some proxy errors. The extension does not guarantee anonymity, leak prevention, DNS routing through the proxy, or protection of all browser or device traffic. Review the privacy practices of your chosen server operator separately.</p>
+
+      <h2>Permissions</h2>
+      <ul>
+        <li><strong>proxy:</strong> reads and changes Chrome proxy settings, applies locally generated routing rules or direct mode, and receives proxy error notifications.</li>
+        <li><strong>storage:</strong> saves configuration and error state locally.</li>
+      </ul>
+      <p>The extension requests no host permissions or browsing-history permissions and injects no content scripts into websites. It downloads no remote executable code.</p>
+
+      <h2>Import and Export</h2>
+      <p>Export creates a JSON file containing the proxy URI and hostname exception list. Import reads a local file that you select and replaces those settings only after validation and your confirmation. These operations do not upload the file to a server. Exported files can reveal a proxy address or private hostname patterns; share and store them with care.</p>
+
+      <h2>Retention and Removal</h2>
+      <p>Saved settings remain in the extension's local storage until replaced or removed. Disabling the proxy or disabling the extension does not delete them. Chrome normally removes extension local storage when you uninstall the extension. Exported JSON files are separate files and must be deleted by you if no longer needed.</p>
+      <p>Turning the proxy off inside the popup explicitly selects Chrome direct mode. Disabling or uninstalling the extension instead releases its control over Chrome proxy settings, so system or other proxy settings may apply again. None of these actions disables an operating-system VPN or TUN tunnel.</p>
+
+      <h2>Disclosure and Sale</h2>
+      <p>The extension does not transmit locally stored configuration or browsing history to the developer, sell user data, or use user data for advertising. Routing traffic through your chosen SOCKS5 server is part of the requested functionality, not a developer-operated analytics service.</p>
+
+      <h2>Changes and Contact</h2>
+      <p>This policy may be updated when the extension's behavior changes. Updates will appear on this page with a revised date. For privacy questions, use the publisher contact email shown on the extension's Chrome Web Store listing.</p>
+    </main>
+  </body>
+</html>
